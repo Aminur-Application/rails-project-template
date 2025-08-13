@@ -3,7 +3,7 @@ services:
   web:
     build: .
     container_name: rails-web
-    command: ./bin/rails s -b 0.0.0.0 -p 3000
+    command:  bash -c "./bin/rails db:prepare && ./bin/rails s -b 0.0.0.0 -p 3000"
     environment:
       - RAILS_ENV=development
     ports:
@@ -15,6 +15,20 @@ services:
     depends_on:
       db:
         condition: service_healthy
+  test:
+    build: .
+    container_name: rails-test
+    command: bash -c "./bin/rails db:prepare && sleep infinity"
+    environment:
+      - RAILS_ENV=test
+    volumes:
+      - .:/rails
+    stdin_open: true
+    tty: true
+    depends_on:
+      db:
+        condition: service_healthy
+  
   db:
     image: postgres:15
     container_name: rails-db
@@ -24,8 +38,13 @@ services:
       POSTGRES_DB: rails_app
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
+
+volumes:
+  postgres_data:
