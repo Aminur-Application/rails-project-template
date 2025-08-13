@@ -1,24 +1,57 @@
-# README
+# Rails App with Docker
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Building Rails from Scratch on Windows
 
-Things you may want to cover:
+### Prerequisites
+- Docker Desktop installed and running
+- Git (optional)
 
-* Ruby version
+### Initial Setup Steps
 
-* System dependencies
+1. **Create project directory**
+   ```bash
+   mkdir rails-app
+   cd rails-app
+   ```
 
-* Configuration
+2. **Create Gemfile**
+   ```ruby
+   source "https://rubygems.org"
+   gem "rails", "~> 7.2.2"
+   ```
 
-* Database creation
+3. **Create empty Gemfile.lock**
+   ```bash
+   touch Gemfile.lock
+   ```
 
-* Database initialization
+4. **Create Dockerfile** (see Dockerfile in repo)
 
-* How to run the test suite
+5. **Create docker-compose.yml** (see docker-compose.yml in repo)
 
-* Services (job queues, cache servers, search engines, etc.)
+6. **Generate Rails app**
+   ```bash
+   docker-compose run web rails new . --force --database=postgresql
+   ```
 
-* Deployment instructions
+7. **Build and start services**
+   ```bash
+   docker-compose build
+   docker-compose up
+   ```
 
-* ...
+### Development Commands
+
+- **Start services**: `docker-compose up`
+- **Run Rails commands**: `docker exec -it rails-web ./bin/rails [command]`
+- **Run tests**: `docker exec -it rails-test bundle exec rspec`
+- **Access Rails console**: `docker exec -it rails-web ./bin/rails console`
+- **Access database**: `docker exec -it rails-db psql -U postgres -d rails_app`
+
+### Services
+
+- **web**: Rails development server (localhost:3000)
+- **test**: Rails test environment
+- **db**: PostgreSQL database
+
+The app automatically sets up databases and runs migrations on startup.
