@@ -36,18 +36,18 @@ RUN if [ "$RAILS_ENV" = "production" ]; then \
     fi
 
 # Final stage
-FROM base
+# FROM base
 
-# Copy artifacts
-COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
-COPY --from=build /rails /rails
+# # Copy artifacts
+# COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
+# COPY --from=build /rails /rails
 
-# Create user
-RUN groupadd --system --gid 1000 rails && \
-    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp
-USER 1000:1000
+# # Create user
+# RUN groupadd --system --gid 1000 rails && \
+#     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
+#     chown -R rails:rails db log storage tmp
+# USER 1000:1000
 
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+# ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 EXPOSE 3000
 CMD ["./bin/rails", "server"]
